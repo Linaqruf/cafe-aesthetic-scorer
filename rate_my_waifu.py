@@ -9,7 +9,6 @@ from transformers import pipeline
 import argparse
 
 # Define default values for certain variables
-DEFAULT_THRESHOLD = 0.5
 DEFAULT_MAX_WORKERS = 4
 DEFAULT_BATCH_SIZE = 3
 
@@ -21,7 +20,6 @@ parser.add_argument("--batch_size", type=int, default=DEFAULT_BATCH_SIZE, help="
 parser.add_argument("--use_gpu", action="store_true", help="Use GPU for image classification")
 parser.add_argument("--img_dir", type=str, help="Path to the directory containing images")
 parser.add_argument("--output_dir", type=str, help="Path to the output JSON file")
-parser.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD, help="Score threshold for determining whether to move image to tmp folder")
 parser.add_argument("--max_workers", type=int, default=DEFAULT_MAX_WORKERS, help="Maximum number of worker threads to use in the thread pool")
 
 # Parse the arguments
@@ -32,7 +30,6 @@ batch_size = args.batch_size
 use_gpu = args.use_gpu
 img_dir = args.img_dir
 output_dir = args.output_dir
-threshold = args.threshold
 max_workers = args.max_workers
 
 # Create a list to store the results for each image
@@ -92,19 +89,6 @@ with ThreadPoolExecutor(max_workers=max_workers) as executor:
 
       # Submit the task to the thread pool
       future = executor.submit(results.append, result)
-
-#       # Create the path to the "tmp" folder
-#       tmp_folder_path = os.path.join(os.path.dirname(img_dir), "tmp")
-
-#       # Check if the "tmp" folder exists
-#       if not os.path.exists(tmp_folder_path):
-#         # Create the "tmp" folder
-#         os.makedirs(tmp_folder_path)
-
-#       # Check if the scores for any of the classifications are below the threshold
-#       if any(score < threshold for score in final.values()) or any(score < threshold for score in final_style.values()) or any(score < threshold for score in final_waifu.values()):
-#         # Move the image to the "tmp" folder
-#         os.rename(os.path.join(img_dir, result["filename"]), os.path.join(tmp_folder_path, result["filename"]))
 
   # Save the results to a JSON file
   with open(output_dir, "w") as f:
