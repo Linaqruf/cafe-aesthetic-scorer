@@ -93,18 +93,18 @@ with ThreadPoolExecutor(max_workers=max_workers) as executor:
       # Submit the task to the thread pool
       future = executor.submit(results.append, result)
 
-      # Create the path to the "tmp" folder
-      tmp_folder_path = os.path.join(os.path.dirname(img_dir), "tmp")
+#       # Create the path to the "tmp" folder
+#       tmp_folder_path = os.path.join(os.path.dirname(img_dir), "tmp")
 
-      # Check if the "tmp" folder exists
-      if not os.path.exists(tmp_folder_path):
-        # Create the "tmp" folder
-        os.makedirs(tmp_folder_path)
+#       # Check if the "tmp" folder exists
+#       if not os.path.exists(tmp_folder_path):
+#         # Create the "tmp" folder
+#         os.makedirs(tmp_folder_path)
 
-      # Check if the scores for any of the classifications are below the threshold
-      if any(score < threshold for score in final.values()) or any(score < threshold for score in final_style.values()) or any(score < threshold for score in final_waifu.values()):
-        # Move the image to the "tmp" folder
-        os.rename(os.path.join(img_dir, result["filename"]), os.path.join(tmp_folder_path, result["filename"]))
+#       # Check if the scores for any of the classifications are below the threshold
+#       if any(score < threshold for score in final.values()) or any(score < threshold for score in final_style.values()) or any(score < threshold for score in final_waifu.values()):
+#         # Move the image to the "tmp" folder
+#         os.rename(os.path.join(img_dir, result["filename"]), os.path.join(tmp_folder_path, result["filename"]))
 
   # Save the results to a JSON file
   with open(output_dir, "w") as f:
