@@ -43,6 +43,17 @@ with ThreadPoolExecutor(max_workers=max_workers) as executor:
   # Get the total number of images in the directory
   num_images = len([f for f in os.listdir(img_dir) if f.endswith(".jpg") or f.endswith(".png")])
 
+  if use_gpu:
+    # Use the GPU for image classification
+    device = 0
+  else:
+    # Use the CPU for image classification
+    device = -1
+
+  pipe_aesthetic = pipeline("image-classification", "cafeai/cafe_aesthetic", device=device, batch_size=batch_size)
+  pipe_style = pipeline("image-classification", "cafeai/cafe_style", device=device, batch_size=batch_size)
+  pipe_waifu = pipeline("image-classification", "cafeai/cafe_waifu", device=device, batch_size=batch_size)
+
   # Iterate over all files in the directory
   for file in tqdm(os.listdir(img_dir), total=num_images, dynamic_ncols=True):
     # Check if the file is an image
@@ -50,29 +61,19 @@ with ThreadPoolExecutor(max_workers=max_workers) as executor:
       # Load the image using the PIL library
       input_img = Image.open(os.path.join(img_dir, file))
 
-      if use_gpu:
-        # Use the GPU for image classification
-        device = 0
-      else:
-        # Use the CPU for image classification
-        device = -1
-
       # Use the aesthetic classifier
-      pipe_aesthetic = pipeline("image-classification", "cafeai/cafe_aesthetic", device=device, batch_size=batch_size)
       data = pipe_aesthetic(input_img, top_k=2)
       final = {}
       for d in data:
           final[d["label"]] = d["score"]
 
       # Use the style classifier
-      pipe_style = pipeline("image-classification", "cafeai/cafe_style", device=device, batch_size=batch_size)
       data = pipe_style(input_img, top_k=5)
       final_style = {}
       for d in data:
           final_style[d["label"]] = d["score"]
 
       # Use the waifu classifier
-      pipe_waifu = pipeline("image-classification", "cafeai/cafe_waifu", device=device, batch_size=batch_size)
       data = pipe_waifu(input_img, top_k=5)
       final_waifu = {}
       for d in data:
