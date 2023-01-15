@@ -5,6 +5,9 @@ def add_tag(filename, tag, append):
     # Read the contents of the file
     with open(filename, "r") as f:
         contents = f.read()
+        	    	
+    # Replace spaces with commas	
+    tag = ", ".join(tag.split())
     
     # Replace underscores with spaces
     tag = tag.replace("_", " ")
